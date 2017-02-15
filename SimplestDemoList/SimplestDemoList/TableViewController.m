@@ -1,5 +1,5 @@
 // TableViewController.m
-// 
+//
 // Copyright (c) 2017年 hbzs
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,17 +39,22 @@ NSString *const kDemoListTableViewCellIdentifier = @"kDemoListTableViewCellIdent
 #pragma mark - data source & delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-  return 1;
+  return [DataSource sharedDataSource].dataItems.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+  return 0.0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return [DataSource sharedDataSource].dataItems.count;
+  return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDemoListTableViewCellIdentifier forIndexPath:indexPath];
   
-  cell.textLabel.text   = [DataSource sharedDataSource].dataItems[indexPath.row];
+  cell.textLabel.text   = [DataSource sharedDataSource].dataItems[indexPath.section];
+  cell.textLabel.layer.borderWidth = 0.0;
   cell.accessoryType    = UITableViewCellAccessoryDisclosureIndicator;
   
   return cell;
@@ -73,6 +78,22 @@ NSString *const kDemoListTableViewCellIdentifier = @"kDemoListTableViewCellIdent
     }
   }
   [self.navigationController pushViewController:viewController animated:YES];
+}
+
+#pragma mark - section title
+
+- (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+  NSArray *dataItems     = [DataSource sharedDataSource].dataItems;
+  NSMutableArray *indexs = [[NSMutableArray alloc] initWithCapacity:dataItems.count];
+  for (NSString *dataItem in dataItems) {
+    [indexs addObject:[dataItem substringToIndex:1]];
+  }
+  return indexs;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
+  
+  return index;
 }
 
 @end
